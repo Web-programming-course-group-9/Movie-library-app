@@ -1,0 +1,55 @@
+.auth-screen {
+  max-width: 360px;
+  margin: 64px auto;
+  text-align: left;
+  padding: 0 20px;
+}
+
+.auth-screen form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auth-screen input {
+  font: inherit;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+  margin-bottom: 10px;
+}
+
+.auth-screen button {
+  font: inherit;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  color: var(--accent);
+  background: var(--accent-bg);
+  cursor: pointer;
+  margin-top: 6px;
+
+  &:hover {
+    border-color: var(--accent-border);
+  }
+}
+
+.auth-screen .hint {
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.auth-screen .error {
+  color: #e5484d;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.auth-screen a {
+  display: inline-block;
+  margin-top: 16px;
+  color: var(--accent);
+}
