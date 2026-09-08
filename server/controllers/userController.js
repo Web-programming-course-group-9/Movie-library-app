@@ -12,17 +12,16 @@ function signToken(user) {
   })
 }
 
-export async function register(req, res, next) {
+export async function signUp(req, res, next) {
   try {
-    const { email, password } = req.body
+    const email = req.body.user?.email?.trim().toLowerCase()
+    const password = req.body.user?.password
 
     if (!email || !password) {
       return next(new ApiError('Sähköposti ja salasana vaaditaan', 400))
     }
 
-    const normalizedEmail = email.trim().toLowerCase()
-
-    if (!EMAIL_REGEX.test(normalizedEmail)) {
+    if (!EMAIL_REGEX.test(email)) {
       return next(new ApiError('Virheellinen sähköpostiosoite', 400))
     }
 
@@ -35,32 +34,30 @@ export async function register(req, res, next) {
       )
     }
 
-    const existing = await userModel.findByEmail(normalizedEmail)
+    const existing = await userModel.findByEmail(email)
     if (existing) {
       return next(new ApiError('Sähköposti on jo käytössä', 409))
     }
 
     const passwordHash = await bcrypt.hash(password, 10)
-    const user = await userModel.createUser(normalizedEmail, passwordHash)
-    const token = signToken(user)
+    const user = await userModel.createUser(email, passwordHash)
 
-    res.status(201).json({ token, user })
+    res.status(201).json(user)
   } catch (error) {
     next(error)
   }
 }
 
-export async function login(req, res, next) {
+export async function signIn(req, res, next) {
   try {
-    const { email, password } = req.body
+    const email = req.body.user?.email?.trim().toLowerCase()
+    const password = req.body.user?.password
 
     if (!email || !password) {
       return next(new ApiError('Sähköposti ja salasana vaaditaan', 400))
     }
 
-    const normalizedEmail = email.trim().toLowerCase()
-    const user = await userModel.findByEmail(normalizedEmail)
-
+    const user = await userModel.findByEmail(email)
     if (!user) {
       return next(new ApiError('Väärä sähköposti tai salasana', 401))
     }
@@ -72,10 +69,7 @@ export async function login(req, res, next) {
 
     const token = signToken(user)
 
-    res.json({
-      token,
-      user: { id: user.id, email: user.email, created_at: user.created_at },
-    })
+    res.json({ id: user.id, email: user.email, token })
   } catch (error) {
     next(error)
   }
